@@ -1,27 +1,25 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useReducer } from "react";
 import TodoList from "./TodoList";
 import {Context} from './context.js'
+import reducer from './reducer.js'
 
 export default function App() {
-  const [todos, setTodos] = useState([]);
+  const [state, dispatch] = useReducer(reducer, JSON.parse(localStorage.getItem('todos'))) 
   const [todoTitle, setTodoTitle] = useState('')
 
-  const handleClick = () => console.log('click')
-
+  
   useEffect(() => {
-    const raw = localStorage.getItem('todos') || []
-    setTodos(JSON.parse(raw))
-  }, [])
-
-  useEffect(() => {
-    document.addEventListener('click', handleClick)
-    localStorage.setItem('todos', JSON.stringify(todos))
-  }, [todos])
+    localStorage.setItem('todos', JSON.stringify(state))
+  }, [state])
 
   const addTodo = event => {
     id (event.key === 'Enter') {
+      dispatch({
+        type: 'add',
+        payload: todoTitle
+      })
       setTodos([
-        ...todos,
+        ...state,
         {
           id: Date.now(),
           title: todoTitle,
@@ -32,24 +30,24 @@ export default function App() {
     }
   }
 
-  const removeTodo = id => {
-    setTodos(todos.filter(todo => {
-      return todo.id !== id
-    }))
-  }
+  // const removeTodo = id => {
+  //   setTodos(todos.filter(todo => {
+  //     return todo.id !== id
+  //   }))
+  // }
 
-  const toggleTodo = id => {
-    setTodos(todos.map (todo => {
-      if (todo.id === id) {
-        todo.completed = !todo.completed
-      }
-      return todo
-    }))
-  }
+  // const toggleTodo = id => {
+  //   setTodos(todos.map (todo => {
+  //     if (todo.id === id) {
+  //       todo.completed = !todo.completed
+  //     }
+  //     return todo
+  //   }))
+  // }
 
   return (
     <Context.Provider value={{
-      toggleTodo, removeTodo
+      dispatch
     }}>
     <div className="container">
       <h1>Todo app</h1>
@@ -63,7 +61,7 @@ export default function App() {
         <label>Todo name</label>
       </div>
 
-      <TodoList todos={this.state.todos} />
+      <TodoList todos={state} />
     </div>
     </Context.Provider>
   );
