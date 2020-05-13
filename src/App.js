@@ -7,25 +7,16 @@ export default function App() {
   const [state, dispatch] = useReducer(reducer, JSON.parse(localStorage.getItem('todos'))) 
   const [todoTitle, setTodoTitle] = useState('')
 
-  
   useEffect(() => {
     localStorage.setItem('todos', JSON.stringify(state))
   }, [state])
 
   const addTodo = event => {
-    id (event.key === 'Enter') {
+    if (event.key === 'Enter') {
       dispatch({
         type: 'add',
         payload: todoTitle
       })
-      setTodos([
-        ...state,
-        {
-          id: Date.now(),
-          title: todoTitle,
-          completed: false
-        }
-      ])
       setTodoTitle('')
     }
   }
