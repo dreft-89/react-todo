@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useReducer } from 'react'
+import React, { useContext } from 'react'
 import { Context } from "./context.js";
 
 export default function TodoItem({title, id, completed}) {
